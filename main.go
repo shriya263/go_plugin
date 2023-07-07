@@ -48,11 +48,6 @@ func run(args []string) error {
 	}
 	fmt.Println("after ")
 	fmt.Printf("speaker: %v\n", (*speaker).GetDetails())
-	// Struct of speaker
-	// if s, ok := (*speaker).(speaker); ok {
-	// 	fmt.Println("sss ", s.Message)
-	// }
-
 	speakerName, err := lookUpSymbol[string](plugin, "SpeakerName")
 	if err != nil {
 		return err
