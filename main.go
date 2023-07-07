@@ -47,7 +47,8 @@ func run(args []string) error {
 		return err
 	}
 	fmt.Println("after ")
-	fmt.Printf("speaker: %v\n", (*speaker)) // Struct of speaker
+	fmt.Printf("speaker: %v\n", (*speaker).GetDetails())
+	// Struct of speaker
 	// if s, ok := (*speaker).(speaker); ok {
 	// 	fmt.Println("sss ", s.Message)
 	// }
@@ -72,7 +73,6 @@ func lookUpSymbol[M any](plugin *plugin.Plugin, symbolName string) (*M, error) {
 	switch symbol.(type) {
 	case *M:
 		// for primitives
-		fmt.Printf("symbol.(*M): %v\n", symbol.(*M))
 		return symbol.(*M), nil
 	case M:
 		// for non-primitive
