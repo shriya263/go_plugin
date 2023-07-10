@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -15,6 +16,13 @@ type Speaker interface {
 
 type Parser interface {
 	GetLatitude() map[string]interface{}
+	GetLongitude() string
+}
+
+type longitude struct {
+	StartIndex int
+	EndIndex   int
+	DataType   string
 }
 
 func main() {
@@ -63,8 +71,19 @@ func run(args []string) error {
 		if err != nil {
 			return err
 		}
-		parserDetails := (*parser).GetLatitude()
-		fmt.Println("parser details for latitude ", parserDetails)
+		fmt.Println("--------")
+		// Approach 1: Through map[string]interface{}
+		fmt.Println("Through map")
+		latitudeDetails := (*parser).GetLatitude()
+		fmt.Println("latitude ", latitudeDetails)
+
+		// Approach 2 : Through json
+		fmt.Println("Through json")
+		longitudeDetails := (*parser).GetLongitude()
+
+		var longitudeData longitude
+		_ = json.Unmarshal([]byte(longitudeDetails), &longitudeData)
+		fmt.Println("longitude details ", longitudeData.StartIndex, " ", longitudeData.EndIndex)
 	}
 
 	return nil
