@@ -10,8 +10,11 @@ import (
 
 type Speaker interface {
 	Speak() string
-	GetLatitude() map[string]interface{}
 	GetDetails() interface{}
+}
+
+type Parser interface {
+	GetLatitude() map[string]interface{}
 }
 
 func main() {
@@ -23,20 +26,22 @@ func main() {
 }
 
 func run(args []string) error {
-	lang := "english"
+	pulginName := "english"
 	if len(args) == 2 {
-		lang = args[1]
+		pulginName = args[1]
 	}
 	var mod string
-	switch lang {
+	switch pulginName {
 	case "english":
 		mod = "./plugins/eng/eng.so"
 	case "vietnamese":
 		mod = "plugins/vie/vie.so"
+	case "parser":
+		mod = "plugins/parser/parser.so"
 	default:
 		return errors.New("this speakerName is not supported")
 	}
-
+	// To open the plugin which is mentioned in path (i.e mod )
 	plugin, err := plugin.Open(mod)
 	if err != nil {
 		return err
@@ -46,16 +51,22 @@ func run(args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("after ")
-	fmt.Printf("speaker: %v\n", (*speaker).GetDetails())
+
 	speakerName, err := lookUpSymbol[string](plugin, "SpeakerName")
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s says \"%s\" in %s", *speakerName, (*speaker).Speak(), strings.Title(lang))
-	fmt.Println("\n getLatitude ", (*speaker).GetLatitude())
+	fmt.Printf("%s says \"%s\" in %s \n", *speakerName, (*speaker).Speak(), strings.Title(pulginName))
 
-	fmt.Println("\n get details ", (*speaker).GetDetails())
+	if pulginName == "parser" {
+		parser, err := lookUpSymbol[Parser](plugin, "Parser")
+		if err != nil {
+			return err
+		}
+		parserDetails := (*parser).GetLatitude()
+		fmt.Println("parser details for latitude ", parserDetails)
+	}
+
 	return nil
 }
 
@@ -65,6 +76,7 @@ func lookUpSymbol[M any](plugin *plugin.Plugin, symbolName string) (*M, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("type symbol: %T\n ", symbol)
 	switch symbol.(type) {
 	case *M:
 		// for primitives
