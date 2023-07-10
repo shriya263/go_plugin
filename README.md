@@ -9,5 +9,5 @@
 
 
 ## Reference links :
-https://pkg.go.dev/plugin
-https://dev.to/jacktt/plugin-in-golang-4m67
+- https://pkg.go.dev/plugin
+- https://dev.to/jacktt/plugin-in-golang-4m67
